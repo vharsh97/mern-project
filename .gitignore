@@ -1,0 +1,22 @@
+# Ignore node_modules directories
+node_modules/
+# Ignore node_modules in child directories
+**/node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
+
+# Ignore npm debug logs
+npm-debug.log*
+
+# Ignore VSCode configuration files
+.vscode/
+
+# Ignore dependencies installed by yarn
+yarn.lock
+
+# Ignore dependencies installed by npm
+package-lock.json
