@@ -1,24 +1,19 @@
 // import dependencies
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
 const config = require("./config/config");
 
 // import routes
-// const userRoutes = require("./routes/user");
+const userRoutes = require("./routes/user.routes");
+const destinationRoutes = require("./routes/destination.routes");
 
 // create an instance of the express app
 const app = express();
 
 // set up middleware
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(helmet());
-app.use(morgan("combined"));
+app.use(express.json());
 
 // connect to the MongoDB database using Mongoose
 mongoose.connect(config.db.uri, {
@@ -37,7 +32,10 @@ app.get("/", (req, res) => {
 });
 
 // define routes for user operations
-// app.use("/user", userRoutes);
+app.use("/user", userRoutes);
+
+// define routes for destination operations
+app.use("/destination", destinationRoutes);
 
 // handle errors using Express' built-in error handling middleware
 app.use((err, req, res, next) => {
