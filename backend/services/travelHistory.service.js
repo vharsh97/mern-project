@@ -75,6 +75,20 @@ class TravelHistoryService {
       throw new Error("Internal server error.");
     }
   }
+
+  //function to fetch a user travel history based on id
+  async getUsersTravelHistoryById(id) {
+    try {
+      const user = await User.findById(id).populate(
+        "travelHistory.destination",
+        "name pricePerPerson"
+      );
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Internal server error.");
+    }
+  }
 }
 
 module.exports = TravelHistoryService;
