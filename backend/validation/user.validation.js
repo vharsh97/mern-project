@@ -14,7 +14,7 @@ const usersTravelHistorySchema = Joi.object().keys({
   name: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),
   destinationName: Joi.string().required(),
-  pricePerPerson: Joi.number().precision(2).required(),
+  pricePerPerson: Joi.number().required(),
   numberOfPersons: Joi.number().integer().min(1).required(),
 });
 

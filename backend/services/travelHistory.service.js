@@ -5,12 +5,25 @@ const User = require("../models/user.model");
 class TravelHistoryService {
   //function to create new travel history of a user on form submit
   async createUserTravelHistory(data) {
+    console.log(data);
     const { name, email, destinationName, pricePerPerson, numberOfPersons } =
       data;
+
+    console.log(name);
+    console.log(email);
+    console.log(destinationName);
+    console.log(pricePerPerson);
+    console.log(numberOfPersons);
+
     try {
-      let user = await User.findOne({ name, email }).populate(
-        "travelHistory.destination"
-      );
+      let user = await User.findOne({
+        name: name,
+        email: email,
+      }).populate("travelHistory.destination");
+
+      console.log("before saving into user");
+      console.log(user);
+
       let destination = await Destination.findOne({ name: destinationName });
 
       if (!destination) {
@@ -42,7 +55,6 @@ class TravelHistoryService {
         email,
         travelHistory: [newTravelHistory],
       });
-
       return user;
     } catch (error) {
       console.error(error);
