@@ -16,21 +16,11 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { baseurl } from "../App";
-
-//custom style
-const StyledGrid = styled(Grid)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50vw;
-
-  @media (max-width: 768px) {
-    width: 80vw;
-  }
-`;
+import { StyledCenteredGrid } from "./CustomStyledComponents.styles";
+import CommonHeader from "./CommonHeader";
 
 //Yup validation schema for user input form
 const validationSchema = Yup.object({
@@ -48,6 +38,9 @@ const validationSchema = Yup.object({
 const CreateTravelHistory = () => {
   const [allDestinations, setAllDestinations] = useState();
   const [pricePerPerson, setPricePerPerson] = useState(0);
+
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -70,10 +63,19 @@ const CreateTravelHistory = () => {
         );
         if (response.status === 201) {
           console.log("Posted Successfully");
+          enqueueSnackbar("Successfully Submitted !!", {
+            variant: "success",
+            autoHideDuration: 3000,
+          });
           resetForm();
+          setPricePerPerson(0);
         }
       } catch (error) {
         console.log(error);
+        enqueueSnackbar(error.message, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
       }
     },
   });
@@ -111,140 +113,154 @@ const CreateTravelHistory = () => {
   }, []);
 
   return (
-    <StyledGrid
-      container
-      spacing={2}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Grid item xs={12}>
-        <Typography variant="h4" align="center">
-          New Travel History
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Stack spacing={2} justifyContent="center">
-              <FormControl
-                error={touched.name && Boolean(errors.name)}
-                variant="outlined"
-                fullWidth
-              >
-                <InputLabel htmlFor="name">Name</InputLabel>
-                <OutlinedInput
-                  id="name"
-                  type="text"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                />
-                <FormHelperText>{touched.name && errors.name}</FormHelperText>
-              </FormControl>
-              <FormControl
-                error={touched.email && Boolean(errors.email)}
-                variant="outlined"
-                fullWidth
-              >
-                <InputLabel htmlFor="email">Email address </InputLabel>
-                <OutlinedInput
-                  id="email"
-                  type="email"
-                  name="email"
-                  value={values.email}
-                  onChange={handleChange}
-                />
-                <FormHelperText>{touched.email && errors.email}</FormHelperText>
-              </FormControl>
-              <FormControl variant="outlined">
-                <InputLabel id="destination-label">
-                  Where do you want to go?{" "}
-                </InputLabel>
-                <Select
-                  id="destinationName"
-                  name="destinationName"
-                  label="Where do you want to go?"
-                  labelId="destination-label"
-                  value={formik.values.destinationName}
-                  onChange={handleDestinationChange}
-                  error={
-                    formik.touched.destinationName &&
-                    Boolean(formik.errors.destinationName)
-                  }
-                >
-                  {allDestinations &&
-                    allDestinations.map((data) => (
-                      <MenuItem value={data.name} key={data._id}>
-                        {data.name}
-                      </MenuItem>
-                    ))}
-                </Select>
-                {formik.touched.destinationName &&
-                  formik.errors.destinationName && (
-                    <div
-                      style={{
-                        color: "#d32f2f",
-                        fontSize: "0.75rem",
-                        marginTop: "0.25rem",
-                      }}
-                    >
-                      {formik.errors.destinationName}
-                    </div>
-                  )}
-              </FormControl>
+    <>
+      <CommonHeader>
+        <Button color="inherit" onClick={() => navigate("/")}>
+          View All Submissions
+        </Button>
+      </CommonHeader>
 
-              <Stack
-                spacing={2}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
+      <StyledCenteredGrid
+        container
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item xs={12}>
+          <Typography variant="h4" align="center">
+            New Travel History
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <form onSubmit={handleSubmit}>
+            <FormGroup>
+              <Stack spacing={2} justifyContent="center">
                 <FormControl
-                  error={
-                    touched.numberOfPersons && Boolean(errors.numberOfPersons)
-                  }
+                  error={touched.name && Boolean(errors.name)}
                   variant="outlined"
                   fullWidth
-                  sx={{ width: "70%" }}
                 >
-                  <InputLabel htmlFor="numberOfPersons">
-                    No. of travellers
-                  </InputLabel>
+                  <InputLabel htmlFor="name">Name</InputLabel>
                   <OutlinedInput
-                    id="numberOfPersons"
-                    type="number"
-                    name="numberOfPersons"
-                    value={values.numberOfPersons}
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange}
+                  />
+                  <FormHelperText>{touched.name && errors.name}</FormHelperText>
+                </FormControl>
+                <FormControl
+                  error={touched.email && Boolean(errors.email)}
+                  variant="outlined"
+                  fullWidth
+                >
+                  <InputLabel htmlFor="email">Email address </InputLabel>
+                  <OutlinedInput
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={values.email}
                     onChange={handleChange}
                   />
                   <FormHelperText>
-                    {touched.numberOfPersons && errors.numberOfPersons}
+                    {touched.email && errors.email}
                   </FormHelperText>
                 </FormControl>
-
-                <FormControl variant="outlined" fullWidth sx={{ width: "30%" }}>
-                  <InputLabel htmlFor="pricePerPerson">
-                    Budget per person
+                <FormControl variant="outlined">
+                  <InputLabel id="destination-label">
+                    Where do you want to go?{" "}
                   </InputLabel>
-                  <OutlinedInput
-                    id="pricePerPerson"
-                    type="number"
-                    name="pricePerPerson"
-                    value={pricePerPerson}
-                    disabled
-                    readOnly
-                  />
+                  <Select
+                    id="destinationName"
+                    name="destinationName"
+                    label="Where do you want to go?"
+                    labelId="destination-label"
+                    value={formik.values.destinationName}
+                    onChange={handleDestinationChange}
+                    error={
+                      formik.touched.destinationName &&
+                      Boolean(formik.errors.destinationName)
+                    }
+                  >
+                    {allDestinations &&
+                      allDestinations.map((data) => (
+                        <MenuItem value={data.name} key={data._id}>
+                          {data.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {formik.touched.destinationName &&
+                    formik.errors.destinationName && (
+                      <div
+                        style={{
+                          color: "#d32f2f",
+                          fontSize: "0.75rem",
+                          marginTop: "0.25rem",
+                        }}
+                      >
+                        {formik.errors.destinationName}
+                      </div>
+                    )}
                 </FormControl>
-              </Stack>
 
-              <Button variant="contained" color="primary" type="submit">
-                Submit
-              </Button>
-            </Stack>
-          </FormGroup>
-        </form>
-      </Grid>
-    </StyledGrid>
+                <Stack
+                  spacing={2}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <FormControl
+                    error={
+                      touched.numberOfPersons && Boolean(errors.numberOfPersons)
+                    }
+                    variant="outlined"
+                    fullWidth
+                    sx={{ width: "70%" }}
+                  >
+                    <InputLabel htmlFor="numberOfPersons">
+                      No. of travellers
+                    </InputLabel>
+                    <OutlinedInput
+                      id="numberOfPersons"
+                      type="number"
+                      name="numberOfPersons"
+                      value={values.numberOfPersons}
+                      onChange={handleChange}
+                    />
+                    <FormHelperText>
+                      {touched.numberOfPersons && errors.numberOfPersons}
+                    </FormHelperText>
+                  </FormControl>
+
+                  <FormControl
+                    variant="outlined"
+                    fullWidth
+                    sx={{ width: "30%" }}
+                  >
+                    <InputLabel htmlFor="pricePerPerson">
+                      Budget per person
+                    </InputLabel>
+                    <OutlinedInput
+                      id="pricePerPerson"
+                      type="number"
+                      name="pricePerPerson"
+                      value={pricePerPerson}
+                      disabled
+                      readOnly
+                    />
+                  </FormControl>
+                </Stack>
+
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Stack>
+            </FormGroup>
+          </form>
+        </Grid>
+      </StyledCenteredGrid>
+    </>
   );
 };
 
