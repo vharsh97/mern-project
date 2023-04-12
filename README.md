@@ -6,7 +6,7 @@
 
 ## Steps to run the project:
 - Clone the repository
-- Create a .env file and define PORT and MONGODB_URI for your project.
+- Create a .env file in your project root directory and define PORT and MONGODB_URI for your project.
 
 ### Run Mongo shell
 - Open your terminal and type "mongod" to start your mongodb shell in local.
